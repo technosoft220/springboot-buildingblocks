@@ -3,10 +3,14 @@ package com.technosoft.controllers;
 import java.util.List;
 import java.util.Optional;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Min;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,10 +23,12 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.technosoft.entities.User;
 import com.technosoft.exceptions.UserAlreadyExistsException;
+import com.technosoft.exceptions.UserNameNotFoundException;
 import com.technosoft.exceptions.UserNotFoundException;
 import com.technosoft.services.UserService;
 
 @RestController
+@Validated
 public class UserController {
 
 	@Autowired
@@ -34,7 +40,7 @@ public class UserController {
 	}
 
 	@PostMapping(path = "/users")
-	public ResponseEntity<Object> createUser(@RequestBody User user, UriComponentsBuilder builder) {
+	public ResponseEntity<Object> createUser(@Valid @RequestBody User user, UriComponentsBuilder builder) {
 		try {
 			userService.createUser(user);
 			HttpHeaders headers = new HttpHeaders();
@@ -46,7 +52,7 @@ public class UserController {
 	}
 
 	@GetMapping(path = "/users/{id}")
-	public Optional<User> getUserById(@PathVariable Long id) {
+	public Optional<User> getUserById(@PathVariable @Min(1) Long id) {
 		try {
 			return userService.getUserById(id);
 		} catch (UserNotFoundException ex) {
@@ -69,7 +75,11 @@ public class UserController {
 	}
 
 	@GetMapping(path = "users/byusername/{username}")
-	public User getUserByUsername(@PathVariable String username) {
-		return userService.getUserByUsername(username);
+	public User getUserByUsername(@PathVariable String username) throws UserNameNotFoundException {
+		User user = userService.getUserByUsername(username);
+		if (user == null) {
+			throw new UserNameNotFoundException("Username: " + username + " not found in the Repository");
+		}
+		return user;
 	}
 }
