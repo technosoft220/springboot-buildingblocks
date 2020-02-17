@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -29,17 +30,18 @@ import com.technosoft.services.UserService;
 
 @RestController
 @Validated
+@RequestMapping(value = "/users")
 public class UserController {
 
 	@Autowired
 	private UserService userService;
 
-	@GetMapping(path = "/users")
+	@GetMapping
 	public List<User> getAllUsers() {
 		return userService.getAllUsers();
 	}
 
-	@PostMapping(path = "/users")
+	@PostMapping
 	public ResponseEntity<Object> createUser(@Valid @RequestBody User user, UriComponentsBuilder builder) {
 		try {
 			userService.createUser(user);
@@ -51,7 +53,7 @@ public class UserController {
 		}
 	}
 
-	@GetMapping(path = "/users/{id}")
+	@GetMapping(path = "/{id}")
 	public Optional<User> getUserById(@PathVariable @Min(1) Long id) {
 		try {
 			return userService.getUserById(id);
@@ -60,7 +62,7 @@ public class UserController {
 		}
 	}
 
-	@PutMapping(path = "users/{id}")
+	@PutMapping(path = "/{id}")
 	public User updateUserById(@PathVariable Long id, @RequestBody User user) {
 		try {
 			return userService.updateUserById(id, user);
@@ -69,12 +71,12 @@ public class UserController {
 		}
 	}
 
-	@DeleteMapping(path = "users/{id}")
+	@DeleteMapping(path = "/{id}")
 	public void deleteUserById(@PathVariable Long id) {
 		userService.deleteUserById(id);
 	}
 
-	@GetMapping(path = "users/byusername/{username}")
+	@GetMapping(path = "/byusername/{username}")
 	public User getUserByUsername(@PathVariable String username) throws UserNameNotFoundException {
 		User user = userService.getUserByUsername(username);
 		if (user == null) {
