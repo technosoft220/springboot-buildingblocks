@@ -27,7 +27,8 @@ public class UserService {
 		String username = user.getUserName();
 		User existingUser = userRepository.findByUserName(username);
 		if (existingUser != null) {
-			throw new UserAlreadyExistsException("User with username " + username + " already exists in the repository");
+			throw new UserAlreadyExistsException(
+					"User with username " + username + " already exists in the repository");
 		}
 		return userRepository.save(user);
 	}
@@ -46,7 +47,7 @@ public class UserService {
 			throw new UserNotFoundException(
 					"User with Id " + id + " not exists in the repository, please provide correct user id");
 		}
-		user.setId(id);
+		user.setUserId(id);
 		return userRepository.save(user);
 	}
 

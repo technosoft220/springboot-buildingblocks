@@ -12,13 +12,15 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
+import org.springframework.hateoas.ResourceSupport;
+
 @Entity
 @Table(name = "user")
-public class User {
+public class User extends ResourceSupport {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long id;
+	private Long userId;
 
 	@NotEmpty(message = "Username is mandatory. Please provide username")
 	@Column(name = "USER_NAME", length = 50, nullable = false, unique = true)
@@ -46,22 +48,26 @@ public class User {
 	public User() {
 	}
 
-	public User(Long id, String userName, String firstName, String lastName, String email, String role, String ssn) {
-		this.id = id;
+	public User(Long userId, @NotEmpty(message = "Username is mandatory. Please provide username") String userName,
+			@Size(min = 2, message = "FirstName should have at least two character") String firstName, String lastName,
+			String email, String role, String ssn, List<Order> orders) {
+		super();
+		this.userId = userId;
 		this.userName = userName;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.email = email;
 		this.role = role;
 		this.ssn = ssn;
+		this.orders = orders;
 	}
 
-	public Long getId() {
-		return id;
+	public Long getUserId() {
+		return userId;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	public void setUserId(Long userId) {
+		this.userId = userId;
 	}
 
 	public String getUserName() {
@@ -122,8 +128,8 @@ public class User {
 
 	@Override
 	public String toString() {
-		return "User [id=" + id + ", userName=" + userName + ", firstName=" + firstName + ", lastName=" + lastName
-				+ ", email=" + email + ", role=" + role + ", ssn=" + ssn + "]";
+		return "User [userId=" + userId + ", userName=" + userName + ", firstName=" + firstName + ", lastName="
+				+ lastName + ", email=" + email + ", role=" + role + ", ssn=" + ssn + ", orders=" + orders + "]";
 	}
 
 }
