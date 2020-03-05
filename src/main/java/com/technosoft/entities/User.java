@@ -20,8 +20,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "user")
-//@JsonIgnoreProperties({ "firstName", "lastName" })
-@JsonFilter(value = "userFilter")
+//@JsonIgnoreProperties({ "firstName", "lastName" }) - Static FIlter
+//@JsonFilter(value = "userFilter") - MappingJacksonValue Dynamic Filter
 public class User extends ResourceSupport {
 
 	@Id
